@@ -1,0 +1,215 @@
+
+CREATE DATABASE IF NOT EXISTS inventory;
+USE inventory;
+
+-- Table structure for table suppliers
+DROP TABLE IF EXISTS suppliers;
+CREATE TABLE suppliers (
+  sid int NOT NULL AUTO_INCREMENT,
+  suppliercode varchar(45) NOT NULL,
+  fullname varchar(45) NOT NULL,
+  location varchar(45) NOT NULL,
+  mobile varchar(10) NOT NULL,
+  PRIMARY KEY (sid),
+  UNIQUE KEY (suppliercode)
+);
+
+-- Dump data for table suppliers
+LOCK TABLES suppliers WRITE;
+INSERT INTO suppliers VALUES 
+(401, 's001', 'Tech Supplies Inc.', 'Tokyo', '1800560001'),
+(402, 's002', 'Global Electronics', 'Seoul', '1800560041'),
+(403, 's003', 'Gadget World', 'Dubai', '6546521234'),
+(404, 's004', 'ElectroMart', 'Singapore', '8555202215'),
+(407, 's005', 'Device Hub', 'Sydney', '8555203300'),
+(408, 's006', 'Innovative Solutions', 'Toronto', '9696969696');
+UNLOCK TABLES;
+
+-- Table structure for table products
+DROP TABLE IF EXISTS products;
+CREATE TABLE products (
+  pid int NOT NULL AUTO_INCREMENT,
+  productcode varchar(45) NOT NULL,
+  productname varchar(45) NOT NULL,
+  costprice double NOT NULL,
+  sellprice double NOT NULL,
+  brand varchar(45) NOT NULL,
+  PRIMARY KEY (pid),
+  UNIQUE KEY (productcode)
+);
+
+-- Dump data for table products
+LOCK TABLES products WRITE;
+INSERT INTO products VALUES 
+(111, 'p001', 'Desktop Computer', 85000, 90000, 'Acer'),
+(112, 'p002', 'Tablet', 70000, 72000, 'Samsung'),
+(113, 'p003', 'Smartphone', 60000, 64000, 'Huawei'),
+(114, 'p004', 'Smart TV', 50000, 51000, 'Sony'),
+(121, 'p005', 'Bluetooth Speaker', 2000, 2100, 'JBL'),
+(122, 'p006', 'Wireless Mouse', 1700, 1900, 'Logitech'),
+(128, 'p007', 'Gaming Console', 3000, 3500, 'Microsoft'),
+(129, 'p008', 'Smartwatch', 15000, 17000, 'Fitbit');
+UNLOCK TABLES;
+
+-- Table structure for table customers
+DROP TABLE IF EXISTS customers;
+CREATE TABLE customers (
+  cid int NOT NULL AUTO_INCREMENT,
+  customercode varchar(45) NOT NULL,
+  fullname varchar(45) NOT NULL,
+  location varchar(45) NOT NULL,
+  phone varchar(45) NOT NULL,
+  PRIMARY KEY (cid),
+  UNIQUE KEY (customercode)
+);
+
+-- Dump data for table customers
+LOCK TABLES customers WRITE;
+INSERT INTO customers VALUES 
+(301, 'c001', 'Alice', 'London', '9818562354'),
+(302, 'c002', 'John', 'Bangkok', '9650245489'),
+(303, 'c003', 'Charlie', 'Paris', '9236215622'),
+(304, 'c004', 'Dania', 'Multan', '8854612478'),
+(306, 'c005', 'Dawood', 'Peshawar', '9826546182');
+UNLOCK TABLES;
+
+-- Table structure for table purchaseinfo
+DROP TABLE IF EXISTS purchaseinfo;
+CREATE TABLE purchaseinfo (
+  purchaseID int NOT NULL AUTO_INCREMENT,
+  suppliercode varchar(45) NOT NULL,
+  productcode varchar(45) NOT NULL,
+  date varchar(45) NOT NULL,
+  quantity int NOT NULL,
+  totalcost double NOT NULL,
+  PRIMARY KEY (purchaseID),
+  FOREIGN KEY (suppliercode) REFERENCES suppliers(suppliercode),
+  FOREIGN KEY (productcode) REFERENCES products(productcode)
+);
+
+-- Dump data for table purchaseinfo
+LOCK TABLES purchaseinfo WRITE;
+INSERT INTO purchaseinfo VALUES 
+(1001, 's001', 'p001', '2021-01-14', 10, 850000),
+(1002, 's001', 'p006', '2021-01-14', 20, 34000),
+(1003, 's002', 'p003', '2021-01-14', 5, 300000),
+(1004, 's002', 'p005', '2021-01-14', 5, 10000),
+(1005, 's003', 'p002', '2021-01-14', 2, 140000),
+(1006, 's004', 'p004', '2021-01-14', 2, 100000),
+(1009, 's002', 'p003', '2021-09-01', 2, 120000),
+(1010, 's001', 'p007', '2021-09-01', 10, 30000),
+(1011,'s002','p008','2021-09-03',20,300000);
+UNLOCK TABLES;
+
+
+-- Table structure for table currentstock
+DROP TABLE IF EXISTS currentstock;
+CREATE TABLE currentstock (
+  productcode varchar(45) NOT NULL,
+  quantity int NOT NULL,
+  PRIMARY KEY (productcode),
+  FOREIGN KEY (productcode) REFERENCES products(productcode)
+);
+
+-- Dump data for table currentstock
+LOCK TABLES currentstock WRITE;
+INSERT INTO currentstock VALUES 
+('p001', 146), ('p002', 100), ('p003', 202), 
+('p004', 172), ('p005', 500), ('p006', 500), 
+('p007', 10), ('p008', 20);
+UNLOCK TABLES;
+
+-- Table structure for table salesinfo
+DROP TABLE IF EXISTS salesinfo;
+CREATE TABLE salesinfo (
+  salesid int NOT NULL AUTO_INCREMENT,
+  date varchar(45) NOT NULL,
+  productcode varchar(45) NOT NULL,
+  customercode varchar(45) NOT NULL,
+  quantity int NOT NULL,
+  revenue double NOT NULL,
+  soldby varchar(45) NOT NULL,
+  PRIMARY KEY (salesid),
+  FOREIGN KEY (productcode) REFERENCES products(productcode),
+  FOREIGN KEY (customercode) REFERENCES customers(customercode)
+);
+
+
+
+-- Dump data for table salesinfo
+LOCK TABLES salesinfo WRITE;
+INSERT INTO salesinfo VALUES 
+(2001, '2021-01-16', 'p001', 'c001', 3, 270000, 'user001'),
+(2002, '2021-01-16', 'p002', 'c002', 2, 144000, 'user002'),
+(2003, '2021-01-16', 'p003', 'c003', 1, 64000, 'user003'),
+(2004, '2021-01-16', 'p004', 'c004', 5, 255000, 'user004'),
+(2006, '2021-08-05', 'p001', 'c001', 2, 180000, 'admin001'),
+(2007, '2021-08-06', 'p004', 'c003', 1, 51000, 'user003'),
+(2008, '2021-08-06', 'p007', 'c003', 1, 3500, 'user003'),
+(2009, '2021-08-07', 'p007', 'c003', 5, 17500, 'user003'),
+(2010, '2021-08-12', 'p004', 'c005', 2, 102000, 'admin001'),
+(2011, '2021-08-15', 'p007', 'c002', 10, 35000, 'admin001'),
+(2012, '2021-08-26', 'p004', 'c005', 5, 255000, 'user004');
+UNLOCK TABLES;
+
+-- Table structure for table users
+DROP TABLE IF EXISTS users;
+CREATE TABLE users (
+  id int NOT NULL AUTO_INCREMENT,
+  name varchar(45) NOT NULL,
+  location varchar(45) NOT NULL,
+  phone varchar(10) NOT NULL,
+  password varchar(200) NOT NULL,
+  usertype varchar(45) NOT NULL,
+  PRIMARY KEY (id)
+);
+
+-- Dump data for table users
+LOCK TABLES users WRITE;
+INSERT INTO users VALUES 
+(17, 'Nina', 'Bangkok', '9650786717', 'dbadpass', 'ADMINISTRATOR'),
+(18, 'Junaid', 'Lahore', '9660654785', 'dbstdpass', 'EMPLOYEE'),
+(20, 'Trial Admin', 'Local', '9876543210', 'root', 'ADMINISTRATOR'),
+(29, 'Trial Employee', 'Local', '1122334455', 'emp1', 'EMPLOYEE'), 
+(21, 'George', 'Maldives', '9876543211',  'stdpass2', 'EMPLOYEE'),
+(22, 'William', 'Ottawa', '9876543212', 'stdpass3', 'EMPLOYEE'),
+(23, 'William', 'Lisbon', '9876543213', 'stdpass4', 'EMPLOYEE'),
+(24, 'Ahsan', 'Karachi', '9876543214', 'stdpass5', 'EMPLOYEE'),
+(25, 'Meerub', 'Islamabad', '9876543215', 'stdpass6', 'EMPLOYEE');
+UNLOCK TABLES;
+
+-- Table structure for table userlogs
+DROP TABLE IF EXISTS userlogs;
+CREATE TABLE userlogs (
+id int NOT NULL AUTO_INCREMENT,
+  in_time varchar(45) NOT NULL,
+  out_time varchar(45) NOT NULL,
+  FOREIGN KEY (id) REFERENCES users(id)
+);
+
+
+-- Dump data for table userlogs
+LOCK TABLES userlogs WRITE;
+INSERT IGNORE INTO userlogs (id, in_time, out_time) VALUES
+('17', '2021-09-01T04:46:55', '2021-09-01T04:47:01'),
+('18', '2021-09-01T05:02:43', '2021-09-01T05:02:50'),
+('20', '2021-09-01T05:04:57', '2021-09-01T05:05:04'),
+('29', '2021-09-01T05:05:12', '2021-09-01T05:05:20'),
+('21', '2021-09-01T05:10:08', '2021-09-01T05:10:16'),
+('22', '2021-09-01T06:19:09', '2021-09-01T06:19:21'),
+('17', '2021-09-01T06:19:34', '2021-09-01T06:19:43'),
+('21', '2021-09-01T06:19:46', '2021-09-01T06:20:10'),
+('25', '2021-09-01T14:59:48', '2021-09-01T15:02:09'),
+('22', '2021-09-01T15:09:02', '2021-09-01T15:09:14'),
+('24', '2021-09-01T15:09:27', '2021-09-01T15:09:48'),
+('17', '2021-09-01T15:38:48', '2021-09-01T15:40:00'),
+('22', '2021-09-01T15:40:22', '2021-09-01T15:41:06'),
+('23', '2021-09-01T15:44:26', '2021-09-01T15:44:33'),
+('18', '2021-09-02T01:42:52', '2021-09-02T01:42:55'),
+('23', '2021-09-02T01:43:12', '2021-09-02T01:43:15'),
+('25', '2021-09-03T02:12:41', '2021-09-03T02:19:11'),
+('24', '2021-09-04T08:00:00', '2021-09-04T08:30:00'),
+('25', '2021-09-05T09:00:00', '2021-09-05T09:30:00');
+
+UNLOCK TABLES;
+
